@@ -37,7 +37,9 @@ app.use('/api',editUserRoute)
 
 app.use('/api',postRoute)
 
-
+app.use('/test',(req,res)=>{
+    res.json({message:"Test!"})    
+})
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
