@@ -9,7 +9,7 @@ const cloudinary = require('cloudinary')
 
 const corsOptions = {
     origin:['http://localhost:3000','https://twitterclonefrontend.onrender.com'], 
-    credentials:true,            //access-control-allow-credentials:true
+    credentials:true,        
     optionSuccessStatus:200,
     methods:["GET","POST"]
 }

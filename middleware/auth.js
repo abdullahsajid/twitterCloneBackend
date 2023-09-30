@@ -3,13 +3,21 @@ const jwt = require('jsonwebtoken')
 const cookies = require("cookie-parser");
 exports.auth = async (req,res,next) => {
     try{
-        const { token } = req.cookies;
-        // console.log("Test Token:",token)
-        if(!token){
-            return res.status(401).json({
-                message:"please login!",
-                messages:Error
-            })
+        const authorizationHeader = req.headers['authorization'];
+
+        if (!authorizationHeader) {
+          return res.status(401).json({
+            message: 'Please login!',
+            messages: Error,
+          });
+        }
+    
+        const [bearer, token] = authorizationHeader.split(' ');
+    
+        if (bearer !== 'Bearer' || !token) {
+          return res.status(401).json({
+            message: 'Invalid authorization format',
+          });
         }
         const decode = await jwt.verify(token,process.env.JWT_TOKEN)
         req.user = await Users.findById(decode._id)
@@ -22,6 +30,8 @@ exports.auth = async (req,res,next) => {
         })
     }
 }
+
+
 
 // const token = await req.headers.authorization.split(' ')[1]
 //         console.log(token)
