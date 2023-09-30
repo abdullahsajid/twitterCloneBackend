@@ -8,7 +8,7 @@ const dbConnect = require('./db/dbConnect')
 const cloudinary = require('cloudinary')
 
 const corsOptions = {
-    origin:'https://twitterclonefrontend.onrender.com', 
+    origin:'http://localhost:3000', 
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }

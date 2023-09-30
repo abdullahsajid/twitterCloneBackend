@@ -22,7 +22,7 @@ exports.userLogin = (req,res) => {
             process.env.JWT_TOKEN,
             {expiresIn:'24h'}
             )
-            res.status(200).cookie('token',token,{httpOnly: true})
+            res.status(200).cookie('token',token,{httpOnly: true,secure:true,sameSite:'None'})
             .json({
                 message:"login successfully",
                 token,

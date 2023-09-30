@@ -1,7 +1,7 @@
 exports.logout = async (req,res) => {
     try{
         res.status(200)
-        .cookie('token',null,{expires: new Date(Date.now()),httpOnly:true})
+        .cookie('token',null,{expires: new Date(Date.now()),httpOnly:true,sameSite:'None',secure:true})
         .json({
             success:true,
             message:"logout!"
