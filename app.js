@@ -17,6 +17,7 @@ const registerRoute = require('./routes/register')
 const loginRouter = require('./routes/login')
 const editUserRoute = require('./routes/editUser')
 const postRoute = require('./routes/routePost')
+const userRoute = require('./routes/user')
 
 app.use(cookieParser())
 app.use(cors(corsOptions))
@@ -37,6 +38,8 @@ app.use('/api',loginRouter)
 app.use('/api',editUserRoute)
 
 app.use('/api',postRoute)
+
+app.use('/api',userRoute)
 
 app.use('/test',(req,res)=>{
     res.json({message:"Test!"})    
