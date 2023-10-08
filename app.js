@@ -11,7 +11,7 @@ const corsOptions = {
     origin:['http://localhost:3000','https://twitterclonefrontend.onrender.com'], 
     credentials:true,        
     optionSuccessStatus:200,
-    methods:["GET","POST","PUT"]
+    methods:["GET","POST","PUT","DELETE"]
 }
 const registerRoute = require('./routes/register')
 const loginRouter = require('./routes/login')

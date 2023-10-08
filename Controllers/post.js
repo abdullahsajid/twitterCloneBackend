@@ -190,3 +190,30 @@ exports.followPost = async (req,res) => {
     }
 }
 
+exports.deletePost = async (req,res) => {
+    try{
+        const user = await users.findById(req.user._id)
+        const post = await userPost.findById(req.params._id)
+        if(!post){
+            return res.status(404).json({
+                success:false,
+                message:'Post not found!'
+            })
+        }
+        await post.deleteOne({_id:req.params._id})
+        const index = await user.posts.indexOf(req.params._id)
+        user.posts.splice(index,1)
+        await user.save()
+
+        res.status(200).json({
+            success:true,
+            message:"post deleted!"
+        })
+    }catch(error){
+        res.status(500).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
+
