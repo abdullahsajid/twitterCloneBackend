@@ -1,5 +1,6 @@
 const users = require('../model/userModel')
 const userProfile = require('../model/userProfile')
+const userPost = require('../model/PostModel')
 exports.Profile = async (req,res) => {
     try{
         const user = await users.findById(req.user._id)
@@ -122,3 +123,28 @@ exports.following = async (req,res) => {
         })
     }
 }
+
+exports.viewProfile = async (req,res) => {
+    try{
+        const post = await userPost.findById(req.params._id)
+        const user = await users.findById(post.owner)
+        const profile = await userProfile.findById(user.profileDetails)
+        let postArr=[]
+        for(let i=0; i<user.posts.length;i++){
+            let userPosts = await userPost.findById(user.posts[i])
+            postArr.push(userPosts)
+        }
+        res.status(200).json({
+            success:true,
+            user,
+            profile,
+            postArr
+        })
+    }catch(error){
+        res.status(500).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
+
