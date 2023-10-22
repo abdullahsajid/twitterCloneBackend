@@ -1,5 +1,6 @@
 const users = require('../model/userModel')
 const userPost = require('../model/PostModel')
+const {io} = require('../app')
 
 exports.userPost = async (req,res) => {
     try{
@@ -27,7 +28,6 @@ exports.userPost = async (req,res) => {
             message: error.message
         })
     }
-    
 }
 
 exports.getUserPost = async (req,res) => {
@@ -57,6 +57,7 @@ exports.getUserPost = async (req,res) => {
 }
 
 
+
 exports.postLike = async (req,res) => {
     try{
         const addLike = await userPost.findById(req.params._id)
@@ -65,13 +66,23 @@ exports.postLike = async (req,res) => {
             addLike.likes.splice(index,1)
             await addLike.save()
 
+            let data = addLike.likes.length
+            let condition = false
+            io.emit(`like:${req.params._id}`,{data,condition})
+        
             return res.status(200).json({
                 success:true,
                 message:'post Unlike!'
             })
+
         }else{
             addLike.likes.push(req.user._id)
             await addLike.save()
+        
+            let data = addLike.likes.length
+            let condition = true
+            io.emit(`like:${req.params._id}`,{data,condition})
+        
             res.status(201).json({
                 success:true,
                 message:'post like!'
@@ -217,3 +228,18 @@ exports.deletePost = async (req,res) => {
     }
 }
 
+
+exports.getComment = async (req,res) => {
+    try{    
+        const post = await  userPost.findById(req.params._id)
+        res.status(200).json({
+            success:true,
+            post
+        })
+    }catch(error){
+        res.status(500).json({
+            success:false,
+            message:error.message
+        })
+    }
+}

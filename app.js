@@ -6,6 +6,8 @@ const {auth} = require('./middleware/auth')
 const cors = require('cors')
 const dbConnect = require('./db/dbConnect')
 const cloudinary = require('cloudinary')
+const http = require('http')
+const {Server} = require('socket.io')
 
 const corsOptions = {
     origin:['http://localhost:3000','https://twitterclonefrontend.onrender.com'], 
@@ -13,6 +15,22 @@ const corsOptions = {
     optionSuccessStatus:200,
     methods:["GET","POST","PUT","DELETE"]
 }
+
+const server = http.createServer(app)
+const io = new Server(server,corsOptions)
+
+io.on("connection",(socket) => {
+    console.log("Connection!!")
+    socket.emit("test","Just Testing!")
+
+    socket.on("disconnect",()=>{
+        console.log("user just disconnect!")
+    })
+})
+
+
+module.exports.io = io
+
 const registerRoute = require('./routes/register')
 const loginRouter = require('./routes/login')
 const editUserRoute = require('./routes/editUser')
@@ -29,6 +47,8 @@ dbConnect()
 app.get("/auth",auth,(request, response) => {
     response.json({ message: "You are authorized to access me" });
 });
+ 
+
 
 //routes
 app.use('/api',registerRoute)
@@ -45,13 +65,16 @@ app.use('/test',(req,res)=>{
     res.json({message:"Test!"})    
 })
 
+
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET
 })
 
-app.listen(process.env.PORT,() => {
+
+
+server.listen(process.env.PORT,() => {
     console.log("server is running on",process.env.PORT)
 })
 
