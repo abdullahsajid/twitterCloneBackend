@@ -19,15 +19,29 @@ const corsOptions = {
 const server = http.createServer(app)
 const io = new Server(server,corsOptions)
 
+// let usersDetails=[]
+
 io.on("connection",(socket) => {
     console.log("Connection!!")
     socket.emit("test","Just Testing!")
+
+    // socket?.on("addUser",(username)=>{
+    //     let socketId = socket.id
+    //     !usersDetails.some((user)=>user.username === username) && usersDetails.push({username,socketId})
+    //     console.log(usersDetails)
+    // })
+
+    // socket?.on('sendNotification',({receiverName,senderName}) => {
+    //     const recevier = usersDetails.find((user) => user.username === receiverName)
+    //     console.log(recevier.socketId)
+    //     io.to(recevier.socketId).emit("gottaNotification",{senderName})
+    //     console.log("recevier details:",recevier)
+    // })
 
     socket.on("disconnect",()=>{
         console.log("user just disconnect!")
     })
 })
-
 
 module.exports.io = io
 
@@ -48,7 +62,6 @@ app.get("/auth",auth,(request, response) => {
     response.json({ message: "You are authorized to access me" });
 });
  
-
 
 //routes
 app.use('/api',registerRoute)
@@ -71,8 +84,6 @@ cloudinary.config({
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET
 })
-
-
 
 server.listen(process.env.PORT,() => {
     console.log("server is running on",process.env.PORT)

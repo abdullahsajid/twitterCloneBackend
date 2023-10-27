@@ -69,7 +69,7 @@ exports.postLike = async (req,res) => {
             let data = addLike.likes.length
             let condition = false
             io.emit(`like:${req.params._id}`,{data,condition})
-        
+
             return res.status(200).json({
                 success:true,
                 message:'post Unlike!'
@@ -82,7 +82,8 @@ exports.postLike = async (req,res) => {
             let data = addLike.likes.length
             let condition = true
             io.emit(`like:${req.params._id}`,{data,condition})
-        
+            
+
             res.status(201).json({
                 success:true,
                 message:'post like!'
