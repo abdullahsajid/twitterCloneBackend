@@ -19,27 +19,42 @@ const corsOptions = {
 const server = http.createServer(app)
 const io = new Server(server,corsOptions)
 
-// let usersDetails=[]
+let usersDetails=[]
+
+const addNewUser = (id,username,avatar,socketId) => {
+    !usersDetails.some((user)=>user.username === username) && 
+    usersDetails.push({id,username,avatar,socketId})
+}
+
+const getUser = (receiverName) => {
+    return usersDetails.find((user) => user.username == receiverName)
+}
+
+const removeUser = (socketId) => {
+    usersDetails = usersDetails.filter((user) => user.socketId !== socketId)
+}
 
 io.on("connection",(socket) => {
     console.log("Connection!!")
-    socket.emit("test","Just Testing!")
+    // socket.emit("test","Just Testing!")
 
-    // socket?.on("addUser",(username)=>{
-    //     let socketId = socket.id
-    //     !usersDetails.some((user)=>user.username === username) && usersDetails.push({username,socketId})
-    //     console.log(usersDetails)
-    // })
+    socket?.on("addUser",({id,userName,avatar})=>{
+        let socketId = socket.id
+        addNewUser(id,userName,avatar,socketId)
+        // console.log(usersDetails)
+    })
 
-    // socket?.on('sendNotification',({receiverName,senderName}) => {
-    //     const recevier = usersDetails.find((user) => user.username === receiverName)
-    //     console.log(recevier.socketId)
-    //     io.to(recevier.socketId).emit("gottaNotification",{senderName})
-    //     console.log("recevier details:",recevier)
-    // })
+    socket?.on('sendNotification',({receiverName,senderName,img,type}) => {
+        let recevier = getUser(receiverName)
+        if(recevier){
+            io.to(recevier.socketId).emit("gottaNotification",{senderName,img,type})
+        }
+        // console.log("recevier details:",recevier)
+    })
 
     socket.on("disconnect",()=>{
         console.log("user just disconnect!")
+        removeUser(socket.id)
     })
 })
 
@@ -88,5 +103,3 @@ cloudinary.config({
 server.listen(process.env.PORT,() => {
     console.log("server is running on",process.env.PORT)
 })
-
-
