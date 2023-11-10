@@ -19,9 +19,18 @@ exports.recommendUser = async (req,res) => {
                 recommendedUser.push(recommend)
             }
         }
+
+        const newRecommender = recommendedUser.map((item)=>{
+            if(item.following.includes(loginUser?._id)){
+                return {...item,type:{choice:'unfollow'}}
+            }else{
+                return {...item,type:{choice:'follow'}}
+            }
+        })
+
         res.status(200).json({
             success:true,
-            recommendedUser
+            newRecommender
         })
     }catch(error){
         res.status(500).json({
